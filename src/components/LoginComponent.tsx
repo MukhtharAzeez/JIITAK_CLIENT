@@ -35,8 +35,7 @@ function LoginComponent() {
                     <p className="text-center text-sm text-gray-500 font-light">
                         Sign in with credentials
                     </p>
-                    <form className="mt-6">
-
+                    <div className="mt-6">
                         <div className="relative mt-3">
                             <input
                                 className="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600  transition  rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
@@ -58,11 +57,9 @@ function LoginComponent() {
                                 </svg>
                             </div>
                         </div>
-
                         <p className="text-center text-sm text-red-600 font-light mt-3">
                             {emailError}
                         </p>
-
                         <div className="relative mt-3">
                             <input
                                 className="appearance-none border pl-12 border-gray-100 shadow-sm focus:shadow-md focus:placeholder-gray-600  transition  rounded-md w-full py-3 text-gray-600 leading-tight focus:outline-none focus:ring-gray-600 focus:shadow-outline"
@@ -86,7 +83,7 @@ function LoginComponent() {
                                 Sign in
                             </button>
                         </div>
-                    </form>
+                    </div>
                 </div>
                 <div className="w-full ">
                     <p className="text-center text-sm text-gray-500 font-light py-4">
