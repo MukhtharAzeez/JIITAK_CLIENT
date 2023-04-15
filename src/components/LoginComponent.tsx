@@ -86,8 +86,9 @@ function LoginComponent() {
                     </div>
                 </div>
                 <div className="w-full ">
-                    <p className="text-center text-sm text-gray-500 font-light py-4">
-                        Don't have an account ? <span className="text-base text-gray-800 cursor-pointer" onClick={navigateToLoginPage}>Signup</span>
+                    <p className="text-center text-sm text-gray-500 font-light py-4 flex flex-col">
+                        <div>Don't have an account ? <span className="text-base text-gray-800 cursor-pointer" onClick={navigateToLoginPage}>Signup</span></div>
+                        <div>Forgot Your Password ? <span className="text-base text-gray-800 cursor-pointer" onClick={()=>navigate('/forgot-password')}>Change Password</span></div>
                     </p>
                 </div>
             </div>
