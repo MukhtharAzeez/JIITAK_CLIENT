@@ -1,16 +1,33 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Flip, ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
+import { useDispatch, useSelector } from "react-redux";
+import { addUserDetails, currentUser } from '../redux/userslice';
 
 function SignupComponent() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { token } = useSelector(currentUser)
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const [emailError, setEmailError] = useState('');
-  const [passwordType,setPasswordType] = useState('');
+  const [passwordType, setPasswordType] = useState('');
+
+  useEffect(() => {
+    if (token) {
+      navigate('/update-profile')
+    } else {
+      const token = localStorage.getItem('token')
+      if (token) {
+        dispatch(addUserDetails(token))
+        navigate('/update-profile')
+      }
+    }
+  }, [])
 
   const notify = (message: string) => {
     toast.error(message, {
@@ -35,37 +52,41 @@ function SignupComponent() {
       return re.test(email);
     }
 
-    if(email.length == 0) return setEmailError('')
-    
+    if (email.length == 0) return setEmailError('')
+
     if (!validateEmail(email)) {
       setEmailError("email must be a valid email address")
-    }else {      
+    } else {
       setEmailError('');
     }
   }
 
-  const validatePassword = (e:any) => {
+  const validatePassword = (e: any) => {
     setPassword(e.target.value)
     function checkPasswordStrong(password: string) {
       const strong = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
       return strong.test(password)
     }
-    if(checkPasswordStrong(e.target.value)){
+    if (checkPasswordStrong(e.target.value)) {
       setPasswordType("Strong");
-    }else{
+    } else {
       setPasswordType("Not Strong");
     }
 
   }
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     if (username.length === 0 || email.length === 0 || password.length === 0) {
       notify('All fields are required')
       return
     }
-    console.log(username)
-    console.log(email)
-    console.log(password)
+    try {
+      const result = await axios.post('http://localhost:4000/user/signup', { username, email, password }, { withCredentials: true })
+      localStorage.setItem("token", result.data.email)
+      dispatch(addUserDetails(result.data.email))
+    } catch (error: any) {
+      notify(error.response.data.message)
+    }
   }
 
   return (
@@ -92,7 +113,7 @@ function SignupComponent() {
                 type="text"
                 placeholder="Email"
                 value={email}
-                onChange={(e)=>setEmail(e.target.value)}
+                onChange={(e) => setEmail(e.target.value)}
                 onBlur={validateEmail}
               />
               <div className="absolute left-0 inset-y-0 flex items-center">
@@ -120,7 +141,7 @@ function SignupComponent() {
                 placeholder="Password"
                 value={password}
                 onChange={validatePassword}
-                onBlur={()=>{
+                onBlur={() => {
                   password.length === 0 && setPasswordType('')
                 }}
               />
@@ -135,7 +156,7 @@ function SignupComponent() {
                 </svg>
               </div>
             </div>
-            {passwordType.length > 0 && 
+            {passwordType.length > 0 &&
               <p className="mt-4 italic text-gray-500 font-light text-xs">Password strength: <span className={`font-bold ${passwordType === 'Strong' ? 'text-green-400' : 'text-red-400'} `}>{passwordType}</span> {passwordType === 'Not Strong' && 'Include digits, numbers, uppercase, lowercase and minimum length is 8'} </p>
             }
             <div className="flex items-center justify-center mt-8">

@@ -1,7 +1,26 @@
-import React, { useState } from 'react'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { Flip, ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { addUserDetails, currentUser } from '../redux/userslice';
 
 function LoginComponent() {
+    const dispatch = useDispatch();
+    const { token } = useSelector(currentUser)
+
+    useEffect(() => {
+        if (token) {
+            navigate('/update-profile')
+        }else{
+            const token = localStorage.getItem('token')
+            if(token){
+                dispatch(addUserDetails(token))
+                navigate('/update-profile')
+            }
+        }
+    }, [])
 
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
@@ -13,18 +32,42 @@ function LoginComponent() {
         navigate('/signup')
     }
 
+    const notify = (message: string) => {
+        toast.error(message, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+        });
+    }
+
     const validateEmail = () => {
         function validateEmail(email: string) {
             const re = /\S+@\S+\.\S+/;
             return re.test(email);
         }
-
         if (email.length == 0) return setEmailError('')
-
         if (!validateEmail(email)) {
             setEmailError("email must be a valid email address")
         } else {
             setEmailError('');
+        }
+    }
+
+    const handleLogin = async() => {
+        if(emailError.length == 0){
+            try {
+                const result = await axios.post('http://localhost:4000/user/login', { email, password }, { withCredentials: true })
+                localStorage.setItem("token", result.data.email);
+                dispatch(addUserDetails(result.data.email))
+                navigate('/update-profile')
+            } catch (error: any) {
+                notify(error.response.data.message)
+            }
         }
     }
 
@@ -66,6 +109,8 @@ function LoginComponent() {
                                 id="password"
                                 type="password"
                                 placeholder="Password"
+                                value={password}
+                                onChange={(e)=>setPassword(e.target.value)}
                             />
                             <div className="absolute left-0 inset-y-0 flex items-center">
                                 <svg
@@ -79,7 +124,7 @@ function LoginComponent() {
                             </div>
                         </div>
                         <div className="flex items-center justify-center mt-8">
-                            <button className="text-white py-2 px-4 uppercase rounded bg-indigo-500 hover:bg-indigo-600 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
+                            <button onClick={handleLogin} className="text-white py-2 px-4 uppercase rounded bg-indigo-500 hover:bg-indigo-600 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
                                 Sign in
                             </button>
                         </div>
@@ -92,6 +137,21 @@ function LoginComponent() {
                     </p>
                 </div>
             </div>
+
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                limit={4}
+                hideProgressBar
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+                transition={Flip}
+            />
         </div>
     )
 }
