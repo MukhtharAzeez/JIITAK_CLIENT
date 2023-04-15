@@ -90,6 +90,7 @@ function SignupComponent() {
       localStorage.setItem("id", result.data.id);
       localStorage.setItem("username", result.data.username);
       dispatch(addUserDetails(result.data))
+      navigate('/update-profile')
     } catch (error: any) {
       notify(error.response.data.message)
     }

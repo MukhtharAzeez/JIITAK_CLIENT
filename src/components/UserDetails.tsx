@@ -58,6 +58,17 @@ function UserDetails() {
                 localStorage.setItem("email", result.data.email);
                 localStorage.setItem("username", result.data.username);
                 dispatch(addUserDetails({email:result.data.email, username:result.data.username, id: userId}))
+                toast.success('Profile Updated', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
+                setEdit(true)
             } catch (error: any) {
                 console.log(error)
                 notify(error.response.data.message)

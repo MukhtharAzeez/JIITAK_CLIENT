@@ -2,6 +2,8 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { currentUser } from '../redux/userslice'
+import { Flip, ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function ChangePassword() {
     const [oldPassword, setOldPassword] = useState('')
@@ -15,8 +17,18 @@ function ChangePassword() {
         if(oldPassword.length > 0 && newPassword.length > 0 ){
             try {
                 console.log(userId)
-                const result = await axios.patch(`http://localhost:4000/user/updatePassword/${userId}`, { oldPassword, newPassword }, { withCredentials: true })
+                await axios.patch(`http://localhost:4000/user/updatePassword/${userId}`, { oldPassword, newPassword }, { withCredentials: true })
                 setError('')
+                toast.success('Password Changed', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             } catch (error: any) {
                 console.log(error)
                 setError(error.response.data.message)
@@ -85,6 +97,21 @@ function ChangePassword() {
                     </button>
                 </div>
             </div>
+
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                limit={4}
+                hideProgressBar
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+                transition={Flip}
+            />
         </div>
     )
 }
