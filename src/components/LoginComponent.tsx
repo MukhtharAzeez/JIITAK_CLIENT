@@ -8,15 +8,18 @@ import { addUserDetails, currentUser } from '../redux/userslice';
 
 function LoginComponent() {
     const dispatch = useDispatch();
-    const { token } = useSelector(currentUser)
-
+    const user = useSelector(currentUser)
+    
     useEffect(() => {
-        if (token) {
+        const email = user.email
+        if (email) {
             navigate('/update-profile')
         }else{
-            const token = localStorage.getItem('token')
-            if(token){
-                dispatch(addUserDetails(token))
+            const email = localStorage.getItem('email')
+            if(email){
+                const username = localStorage.getItem('username')
+                const id = localStorage.getItem('id')
+                dispatch(addUserDetails({ email, username, id }))
                 navigate('/update-profile')
             }
         }
@@ -62,8 +65,10 @@ function LoginComponent() {
         if(emailError.length == 0){
             try {
                 const result = await axios.post('http://localhost:4000/user/login', { email, password }, { withCredentials: true })
-                localStorage.setItem("token", result.data.email);
-                dispatch(addUserDetails(result.data.email))
+                localStorage.setItem("email", result.data.email);
+                localStorage.setItem("username", result.data.username);
+                localStorage.setItem("id", result.data.id);
+                dispatch(addUserDetails(result.data))
                 navigate('/update-profile')
             } catch (error: any) {
                 notify(error.response.data.message)

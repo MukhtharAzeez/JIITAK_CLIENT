@@ -1,6 +1,34 @@
-import React from 'react'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { currentUser } from '../redux/userslice'
 
 function ChangePassword() {
+    const [oldPassword, setOldPassword] = useState('')
+    const [newPassword, setNewPassword] = useState('')
+    const user = useSelector(currentUser)
+    const [userId, setUserId ] = useState(user.id)
+    const [error, setError] = useState('');
+
+
+    const handlePasswordChange = async() => {
+        if(oldPassword.length > 0 && newPassword.length > 0 ){
+            try {
+                console.log(userId)
+                const result = await axios.patch(`http://localhost:4000/user/updatePassword/${userId}`, { oldPassword, newPassword }, { withCredentials: true })
+                setError('')
+            } catch (error: any) {
+                console.log(error)
+                setError(error.response.data.message)
+            }
+        }
+    }
+
+    useEffect(()=>{
+        console.log(user)
+        // setUserId(id)
+    },[])
+
     return (
         <div className='w-1/3 min-h-[80vh] bg-gray-100 shadow-2xl flex justify-center items-center flex-col'>
             <div>
@@ -16,6 +44,7 @@ function ChangePassword() {
                         id="password"
                         type="password"
                         placeholder="Old Password"
+                        onChange={(e)=>setOldPassword(e.target.value)}
                     />
                     <div className="absolute left-0 inset-y-0 flex items-center">
                         <svg
@@ -34,6 +63,7 @@ function ChangePassword() {
                         id="password"
                         type="password"
                         placeholder="New Password"
+                        onChange={(e) => setNewPassword(e.target.value)}
                     />
                     <div className="absolute left-0 inset-y-0 flex items-center">
                         <svg
@@ -46,8 +76,11 @@ function ChangePassword() {
                         </svg>
                     </div>
                 </div>
+                <p className="text-center text-sm text-red-600 font-light mt-3">
+                    {error}
+                </p>
                 <div className="flex items-center justify-center mt-8">
-                    <button className="text-white py-2 px-4 uppercase rounded bg-indigo-500 hover:bg-indigo-600 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
+                    <button onClick={handlePasswordChange} className="text-white py-2 px-4 uppercase rounded bg-indigo-500 hover:bg-indigo-600 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">
                         Update
                     </button>
                 </div>

@@ -2,11 +2,15 @@ import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "./store";
 
 export interface UserDetails {
-  token: string | null;
+  id: number | null;
+  email: string | null;
+  username: string | null;
 }
 
 const initialState: UserDetails = {
-  token: null,
+  id: null,
+  email: null,
+  username: null,
 };
 
 const userAuthSlice = createSlice({
@@ -14,13 +18,16 @@ const userAuthSlice = createSlice({
   initialState,
   reducers: {
     addUserDetails(state, actions) {
-        console.log(actions.payload)
       const newItem = actions.payload;
-      state.token = newItem;
+      state.email = newItem.email;
+      state.username = newItem.username;
+      state.id = newItem.id
     },
     logoutUser(state) {
-      state.token = null;
-      
+      state.email = null;
+      state.username = null;
+      state.id = null;
+
     },
   },
 });

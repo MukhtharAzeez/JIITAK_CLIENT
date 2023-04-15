@@ -6,15 +6,16 @@ import { addUserDetails, currentUser } from '../redux/userslice';
 import { useNavigate } from 'react-router-dom';
 
 function UpdateProfile() {
-  const { token } = useSelector(currentUser)
+  const { email } = useSelector(currentUser)
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (!token) {
-      const token = localStorage.getItem('token')
-      if (token) {
-        dispatch(addUserDetails(token))
+    if (!email) {
+      const email = localStorage.getItem('email')
+      if (email) {
+        const username = localStorage.getItem('username')
+        dispatch(addUserDetails({email, username}))
       }else{
         navigate('/login')
       }
