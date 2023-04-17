@@ -1,12 +1,14 @@
 import React from 'react'
-import { useDispatch } from 'react-redux';
-import { logoutUser } from '../redux/userslice';
+import { useDispatch, useSelector } from 'react-redux';
+import { currentUser, logoutUser } from '../redux/userslice';
 import { useNavigate } from 'react-router-dom';
 
 function Navbar() {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const {username }  = useSelector(currentUser)
 
     const handleLogout = () => {
         localStorage.clear();
@@ -18,7 +20,7 @@ function Navbar() {
         <div className='w-full h-28 bg-gray-300 shadow-lg flex items-center justify-around fixed'>
             <div>
                 <p className="text-center text-xl text-gray-500 font-light">
-                    <span className='uppercase font-bold text-3xl'>Mukhthar Azeez</span>
+                    <span className='uppercase font-bold text-3xl'>{username}</span>
                 </p>
             </div>
             <div>

@@ -36,17 +36,13 @@ function ChangePassword() {
         }
     }
 
-    useEffect(()=>{
-        console.log(user)
-        // setUserId(id)
-    },[])
 
     return (
         <div className='w-1/3 min-h-[80vh] bg-gray-100 shadow-2xl flex justify-center items-center flex-col'>
             <div>
                 <p className="text-center text-xl text-gray-500 font-light">
                     Change Password <br />
-                    <span className='uppercase font-bold text-3xl'>Mukhthar Azeez</span>
+                    <span className='uppercase font-bold text-3xl'>{user.username}</span>
                 </p>
             </div>
             <div className="mt-6">
